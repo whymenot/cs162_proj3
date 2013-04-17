@@ -30,7 +30,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 //package edu.berkeley.cs162;
-package edu.berkeley.cs162;
+package nachos.kv;
 
 import java.net.Socket;
 
@@ -113,12 +113,6 @@ public class KVClient implements KeyValueInterface {
 	    request.sendMessage(socket);
 	    
 	    try {
-	    	socket.shutdownOutput();
-	    }
-	    catch (IOException e) {
-	    	throw new KVException(new KVMessage("resp", "Unknown Error: " + e.getLocalizedMessage()));
-	    }
-	    try {
 	    	is = socket.getInputStream();
 	    }
 	    catch (IOException e){
@@ -150,12 +144,6 @@ public class KVClient implements KeyValueInterface {
 	    request.sendMessage(socket);
 	    
 	    try {
-	    	socket.shutdownOutput();
-	    }
-	    catch (IOException e) {
-	    	throw new KVException(new KVMessage("resp", "Unknown Error: " + e.getLocalizedMessage()));
-	    }
-	    try {
 	    	is = socket.getInputStream();
 	    }
 	    catch (IOException e) {
@@ -185,12 +173,6 @@ public class KVClient implements KeyValueInterface {
 		request.setKey(key);
 		request.sendMessage(socket);
 		
-		try {
-	    	socket.shutdownOutput();
-	    }
-	    catch (IOException e) {
-	    	throw new KVException(new KVMessage("resp", "Unknown Error: " + e.getLocalizedMessage()));
-	    }
 		try {
 			is = socket.getInputStream();
 		}
