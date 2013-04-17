@@ -39,10 +39,10 @@ import edu.berkeley.cs162.KVServer;
 import edu.berkeley.cs162.NetworkHandler;
 import edu.berkeley.cs162.SocketServer;
 */
-import nachos.kv.KVClientHandler;
-import nachos.kv.KVServer;
-import nachos.kv.NetworkHandler;
-import nachos.kv.SocketServer;
+import edu.berkeley.cs162.KVClientHandler;
+import edu.berkeley.cs162.KVServer;
+import edu.berkeley.cs162.NetworkHandler;
+import edu.berkeley.cs162.SocketServer;
 
 public class Server {
 	static KVServer key_server = null;
