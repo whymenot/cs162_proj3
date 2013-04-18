@@ -16,8 +16,9 @@ public class KVStore_test {
 		store.put("k2", "v2");
 		String expectedXML = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><KVStore><KVPair><Key>k2</Key><Value>v2</Value></KVPair><KVPair><Key>k1</Key><Value>v1</Value></KVPair></KVStore>";
 		String realXML = store.toXML();
+		System.out.println("Part 1");
 		System.out.println("RealXML: " + realXML);
-		System.out.println("FakeXML: " + realXML);
+		System.out.println("FakeXML: " + expectedXML);
 		assertTrue(expectedXML.compareTo(realXML)==0);
 		//Test for dumpToFile
 		store.dumpToFile("test1.xml");
@@ -30,7 +31,11 @@ public class KVStore_test {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		assertTrue(store2.toXML().compareTo(expectedXML) == 0);
+		realXML = store2.toXML();
+		System.out.println("Part 2");
+		System.out.println("RealXML: " + realXML + "||");
+		System.out.println("FakeXML: " + expectedXML + "||");
+		assertTrue(expectedXML.compareTo(realXML)==0);
 	}
 
 }

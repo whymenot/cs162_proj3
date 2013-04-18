@@ -197,14 +197,11 @@ public class KVStore implements KeyValueInterface {
         if (!f.exists() || !f.canRead()) {
             throw new IOException(fileName + " could not be opened");
         }
-        System.out.println("A");
         Document doc;
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-            System.out.println("b");
             doc = docBuilder.parse(f);
-            System.out.println("c");
 	        if (!doc.getXmlEncoding().equals("UTF-8")) {
 	            throw new KVException(new KVMessage("resp", "Unknown Error: Incorrect XML char encoding."));
 	        }
@@ -214,14 +211,13 @@ public class KVStore implements KeyValueInterface {
 	        }
 
 	        // Restore K-V pairs
-	        System.out.println("d");
 	        NodeList pairNodes = ((Element)nodes.item(0)).getElementsByTagName("KVPair");
 	        Element pElem, kElem, vElem;
 	        for (int i = 0; i < pairNodes.getLength(); i++) {
 	        	pElem = (Element) pairNodes.item(i);
 	        	kElem = (Element) pElem.getElementsByTagName("Key").item(0);
 	        	vElem = (Element) pElem.getElementsByTagName("Value").item(0);
-	        	put (vElem.getFirstChild().getNodeValue(), kElem.getFirstChild().getNodeValue());
+	        	put (kElem.getFirstChild().getNodeValue(), vElem.getFirstChild().getNodeValue());
 	        }
         } catch (IOException ioe) {
             throw new KVException(new KVMessage("resp", "I/O Error during restoreFromFile"));
