@@ -55,7 +55,8 @@ import org.w3c.dom.Element;
 public class KVCache implements KeyValueInterface {	
 	private int numSets = 100;
 	private int maxElemsPerSet = 10;
-		
+	private KVCacheSet[] sets;
+
 	/**
 	 * Creates a new LRU cache.
 	 * @param cacheSize	the maximum number of entries that will be kept in this cache.
@@ -64,6 +65,10 @@ public class KVCache implements KeyValueInterface {
 		this.numSets = numSets;
 		this.maxElemsPerSet = maxElemsPerSet;     
 		// TODO: Implement Me!
+		this.sets = new KVCacheSet[numSets];
+		for(int i = 0; i<numSets; i++){
+			sets[i] = new KVCacheSet(maxElemsPerSet);
+		}
 	}
 
 	/**
@@ -78,10 +83,10 @@ public class KVCache implements KeyValueInterface {
 		AutoGrader.agCacheGetDelay();
         
 		// TODO: Implement Me!
-		
+		String getResult = sets[getSetId(key)].get(key);
 		// Must be called before returning
 		AutoGrader.agCacheGetFinished(key);
-		return null;
+		return getResult;
 	}
 
 	/**
@@ -99,10 +104,10 @@ public class KVCache implements KeyValueInterface {
 		AutoGrader.agCachePutDelay();
 
 		// TODO: Implement Me!
-		
+		boolean putResult = sets[getSetId(key)].put(key,value);
 		// Must be called before returning
 		AutoGrader.agCachePutFinished(key, value);
-		return false;
+		return putResult;
 	}
 
 	/**
@@ -116,7 +121,7 @@ public class KVCache implements KeyValueInterface {
 		AutoGrader.agCacheDelDelay();
 		
 		// TODO: Implement Me!
-		
+		sets[getSetId(key)].del(key);
 		// Must be called before returning
 		AutoGrader.agCacheDelFinished(key);
 	}
@@ -126,8 +131,7 @@ public class KVCache implements KeyValueInterface {
 	 * @return	the write lock of the set that contains key.
 	 */
 	public WriteLock getWriteLock(String key) {
-	    // TODO: Implement Me!
-	    return null;
+		return sets[getSetId(key)].getWriteLock();
 	}
 	
 	/**
