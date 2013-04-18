@@ -67,7 +67,7 @@ public class KVCache implements KeyValueInterface {
 		// TODO: Implement Me!
 		this.sets = new KVCacheSet[numSets];
 		for(int i = 0; i<numSets; i++){
-			sets[i] = new KVCacheSet(maxElemsPerSet);
+			sets[i] = new KVCacheSet(this.maxElemsPerSet);
 		}
 	}
 

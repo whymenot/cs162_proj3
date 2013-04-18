@@ -4,19 +4,19 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
-
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class KVCacheSet{
 
 	private int maxSize;
 	public Map <String, KVCacheEntry> entries;
 	private LinkedList <String> queue;
-	private WriteLock lock;
+	private ReentrantReadWriteLock lock;
 
 	public KVCacheSet(int size){
 		this.maxSize = size;
 		this.entries = new HashMap<String, KVCacheEntry>();
 		this.queue = new LinkedList<String>();
-		//this.lock = new WriteLock();
+		this.lock = new ReentrantReadWriteLock();
 	}
 
 
@@ -45,6 +45,7 @@ public class KVCacheSet{
 			return true;//not sure if eviction counts as override
 		}
 		else{
+			queue.add(key);
 			entries.put(key, new KVCacheEntry(value));
 			return false;
 		}
@@ -67,6 +68,6 @@ public class KVCacheSet{
 	}
 	
 	public WriteLock getWriteLock(){
-		return this.lock;
+		return this.lock.writeLock();
 	}
 }
