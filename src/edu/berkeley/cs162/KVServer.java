@@ -62,7 +62,11 @@ public class KVServer implements KeyValueInterface {
 		// Must be called before anything else
 		AutoGrader.agKVServerPutStarted(key, value);
 
-		// TODO: implement me
+		Writelock writeLock = dataCache.getWriteLock(key);
+        writeLock.lock();
+        dataStore.put(key, value);   -- // dataStore -> to be synchronized...
+        dataCache.put(key, value);
+        writeLock.unlock();
 
 		// Must be called before returning
 		AutoGrader.agKVServerPutFinished(key, value);
@@ -71,19 +75,31 @@ public class KVServer implements KeyValueInterface {
 	
 	public String get (String key) throws KVException {
 		AutoGrader.agKVServerGetStarted(key); //Must be called before anything else
-
-		
-
+        Writelock writeLock = dataCache.getWriteLock(key);
+        writeLock.lock();
+        temp = dataCache.get(key);
+        if (temp == null)
+            temp = dataStore.get(key);
+        if (temp == null)
+        {
+            writeLock.unlock();
+            throws new KVException("didn't store need new message");
+        } else {
+            dataCache.put(key, temp);
+        }
+        writeLock.unlock();
 		AutoGrader.agKVServerGetFinished(key); //Must be called before returning
-		return null;
+		return temp;
 	}
 	
 	public void del (String key) throws KVException {
 		// Must be called before anything else
 		AutoGrader.agKVServerDelStarted(key);
-
-		// TODO: implement me
-
+        Writelock writeLock = dataCache.getWriteLock(key);
+        writeLock.lock();
+        dataCache.del(key);
+        dataStore.del(key);  //Think about exceptions here
+        writeLock.unlock();
 		// Must be called before returning
 		AutoGrader.agKVServerDelFinished(key);
 	}
