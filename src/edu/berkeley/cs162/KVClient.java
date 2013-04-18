@@ -44,7 +44,6 @@ import java.io.IOException;
 /** Part II END */
 
 
-
 /**
  * This class is used to communicate with (appropriately marshalling and unmarshalling) 
  * objects implementing the {@link KeyValueInterface}.
@@ -66,6 +65,10 @@ public class KVClient implements KeyValueInterface {
 		this.server = server;
 		this.port = port;
 	}
+	
+	//Helper Methods
+	public String getServer() { return this.server; }
+	public int getPort() { return this.port; }
 	
 	//Action Methods
 	/** Part II */

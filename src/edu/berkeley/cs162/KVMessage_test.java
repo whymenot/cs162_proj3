@@ -1,7 +1,11 @@
 package edu.berkeley.cs162;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -97,6 +101,24 @@ public class KVMessage_test {
 			KVMessage kv = e.getMsg();
 			assertTrue(kv.getMsgType()=="resp" && kv.getMessage()=="Message format incorrect");
 		}
+		
+		//Test #5 for constructor3
+		try {
+			KVMessage kvm = new KVMessage("resp");
+			kvm.setKey("sampleKey");
+			kvm.setValue("sampleValue");
+			String xml = kvm.toXML();
+			InputStream stream = new ByteArrayInputStream(xml.getBytes());
+			
+			KVMessage kvm2 = new KVMessage(stream);
+			assertTrue(kvm2.getMsgType().equals("resp"));
+			assertTrue(kvm2.getKey().equals("sampleKey"));
+			assertTrue(kvm2.getValue().equals("sampleValue"));
+		}
+		catch (KVException e) {
+			KVMessage kv = e.getMsg();
+			assertTrue(false);
+		}
 	}
 	
 	@Test
@@ -133,6 +155,114 @@ public class KVMessage_test {
 		}
 		catch (KVException e) {
 			assertTrue(false);
+		}
+		
+		//Test #4 for toXML
+		try {
+			KVMessage kv = new KVMessage("resp");
+			kv.setMessage("Success");
+			String answer = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><KVMessage type=\"resp\"><Message>Success</Message></KVMessage>";
+			assertTrue(kv.toXML().equals(answer));
+		}
+		catch (KVException e) {
+			assertTrue(false);
+		}
+	}
+	
+	@Test
+	public void sendMessage() {
+		Thread client = new Thread() {
+			public void run() {
+				InetAddress server = null;
+				int port = 2222;
+				Socket socket = null;
+				            
+				try {
+					server = InetAddress.getLocalHost();
+					socket = new Socket(server, port);
+					                
+					KVMessage request = null;
+					KVMessage response = null;
+					InputStream is = null;
+					                
+					request = new KVMessage("putreq");
+					request.setKey("sampleKey");
+					request.setValue("sampleValue");
+					
+					System.out.println("BB");
+					request.sendMessage(socket);
+					//<--------------------------------------- OK
+					is = socket.getInputStream();
+					System.out.println("CC1");
+					response = new KVMessage(is);
+					System.out.println("CC2");
+					System.out.println(response.toXML());
+				}
+				catch (KVException e) {
+					System.out.println(e.getMsg().getMessage());
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+				finally {
+					try {
+						socket.close();
+					}
+					catch (IOException e) {
+					            	
+					}
+				}
+			}
+		};
+		
+		Thread server = new Thread() {
+			public void run() {
+				int port = 2222;
+				ServerSocket serverSocket = null;
+				Socket socket = null;
+				        
+				try {
+					serverSocket = new ServerSocket(port);
+					socket = serverSocket.accept();
+								
+					KVMessage request = null;
+					KVMessage response = null;
+					InputStream is = null;
+								
+					System.out.println("AA");
+					is = socket.getInputStream();
+					request = new KVMessage(is);
+					
+					System.out.println("DD");
+					response = new KVMessage("resp","Success");
+					response.sendMessage(socket);
+				}
+				catch (KVException e) {
+					System.out.println(e.getMsg().getMessage());
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+				finally {
+					try {
+						socket.close();
+					}
+					catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		
+		server.start();
+		client.start();
+		
+		try {
+			server.join();
+			client.join();
+		}
+		catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 }
