@@ -34,6 +34,8 @@ public class KVCache_test {
 		for(int i = 0; i<strs.length; i++){
 			assertTrue(cache.get(strs[i])==null);
 		}
+		
+		//Test for XML
 
 	}
 

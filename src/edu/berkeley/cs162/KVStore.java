@@ -53,6 +53,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 
@@ -142,7 +143,8 @@ public class KVStore implements KeyValueInterface {
     		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
     		Document doc = docBuilder.newDocument();
     		Element rElem, pElem, kElem, vElem;
-    		Node kValue, vValue;
+    		Text kValue;
+			Text vValue;
     		rElem = doc.createElement("KVStore");
     		doc.appendChild(rElem);
     		Enumeration<String> keys = store.keys();
@@ -150,12 +152,12 @@ public class KVStore implements KeyValueInterface {
     			String key = keys.nextElement();
     			pElem = doc.createElement("KVPair");
     			//Key
-                kValue = (Node) doc.createTextNode(key);
+                kValue = doc.createTextNode(key);
                 kElem = doc.createElement("Key");
                 kElem.appendChild(kValue);
                 pElem.appendChild(kElem);
                 //Value
-                vValue = (Node) doc.createTextNode(store.get(key));
+                vValue = doc.createTextNode(store.get(key));
                 vElem = doc.createElement("Value");
                 vElem.appendChild(vValue);
     			pElem.appendChild(vElem);
@@ -176,10 +178,13 @@ public class KVStore implements KeyValueInterface {
     }     
 
     public void dumpToFile(String fileName) throws KVException {
+    	FileWriter fw = null;
     	try {
     		String xmlString = this.toXML();
-    		FileWriter fw = new FileWriter(fileName);
+    		File xmlFile = new File (fileName);
+    		fw = new FileWriter(xmlFile);
     		fw.write(xmlString);
+    		fw.close();
     	}
     	catch (Exception e) {
     		throw new KVException (new KVMessage("IO Error"));
@@ -192,11 +197,14 @@ public class KVStore implements KeyValueInterface {
         if (!f.exists() || !f.canRead()) {
             throw new IOException(fileName + " could not be opened");
         }
+        System.out.println("A");
         Document doc;
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = dbf.newDocumentBuilder();
+            System.out.println("b");
             doc = docBuilder.parse(f);
+            System.out.println("c");
 	        if (!doc.getXmlEncoding().equals("UTF-8")) {
 	            throw new KVException(new KVMessage("resp", "Unknown Error: Incorrect XML char encoding."));
 	        }
@@ -206,6 +214,7 @@ public class KVStore implements KeyValueInterface {
 	        }
 
 	        // Restore K-V pairs
+	        System.out.println("d");
 	        NodeList pairNodes = ((Element)nodes.item(0)).getElementsByTagName("KVPair");
 	        Element pElem, kElem, vElem;
 	        for (int i = 0; i < pairNodes.getLength(); i++) {
