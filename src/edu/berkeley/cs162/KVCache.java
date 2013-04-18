@@ -143,7 +143,7 @@ public class KVCache implements KeyValueInterface {
 		return Math.abs(key.hashCode()) % numSets;
 	}
 	
-	public String toXML() {
+	public String toXML() throws KVException {
 		try { 
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -152,10 +152,11 @@ public class KVCache implements KeyValueInterface {
 			Node kValue, vValue;
 			rElem = doc.createElement("KVCache");
 			doc.appendChild(rElem);
-			for (HashMap set: sets) {
+			for (int i =0; i < sets.length; i++) {
+				KVCacheSet set = sets[i];
 				sElem = doc.createElement("Set");
-				sElem.setAttribute("Id", String.valueOf(this.getSetId(set))); //we need the String of key for set id
-				for (String key: set.keys()) {
+				sElem.setAttribute("Id", String.valueOf(i)); //we need the String of key for set id
+				for (String key: set.entries.keySet()) {
 					pElem = doc.createElement("KVPair");
 					//Key
 		            kValue = (Node) doc.createTextNode(key);
@@ -163,7 +164,7 @@ public class KVCache implements KeyValueInterface {
 		            kElem.appendChild(kValue);
 		            pElem.appendChild(kElem);
 		            //Value
-		            vValue = doc.createTextNode(store.get(key));
+		            vValue = (Node) doc.createTextNode(set.entries.get(key).getData());
 		            vElem = doc.createElement("Value");
 		            vElem.appendChild(vValue);
 					pElem.appendChild(vElem);

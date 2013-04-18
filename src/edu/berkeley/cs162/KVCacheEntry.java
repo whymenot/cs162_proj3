@@ -5,7 +5,7 @@ public class KVCacheEntry {
 	private boolean refBit;
 	private String data;
 
-	private KVacheEntry(String data){
+	public KVCacheEntry(String data){
 		this.data = data;
 		this.refBit = false;
 	}

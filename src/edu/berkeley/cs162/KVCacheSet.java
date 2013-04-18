@@ -1,9 +1,14 @@
 package edu.berkeley.cs162;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
+
 public class KVCacheSet{
 
 	private int maxSize;
-	private Map <String, KVCacheEntry> entries;
+	public Map <String, KVCacheEntry> entries;
 	private LinkedList <String> queue;
 	private WriteLock lock;
 
@@ -11,18 +16,18 @@ public class KVCacheSet{
 		this.maxSize = size;
 		this.entries = new HashMap<String, KVCacheEntry>();
 		this.queue = new LinkedList<String>();
-		this.lock = new WriteLock();
+		//this.lock = new WriteLock();
 	}
 
 
 
-	private boolean put (String key, String value){
-		if entries.contains(key){
-			if (entries.get(key).getValue() == value){
+	public boolean put (String key, String value){
+		if (entries.containsKey(key)) {
+			if (entries.get(key).getData() == value){
 				return false;//may need to update ref bit here?
 			}
 			else{
-				KVCacheEntry curr = entries.get(toRemove);
+				KVCacheEntry curr = entries.get(key);
 				curr.setData(value);
 				return true;
 			}
@@ -47,7 +52,7 @@ public class KVCacheSet{
 
     public String get(String key){
 			if(entries.containsKey(key)){
-				CacheEntry entry = entries.get(key);
+				KVCacheEntry entry = entries.get(key);
 				entry.setRefBit(true);
 				return entry.getData();
 			}
