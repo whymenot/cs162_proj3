@@ -34,7 +34,14 @@ package edu.berkeley.cs162;
 import java.io.StringWriter;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.soap.Node;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -131,33 +138,23 @@ public class KVCache implements KeyValueInterface {
 	private int getSetId(String key) {
 		return Math.abs(key.hashCode()) % numSets;
 	}
-    /*
-    <?xml version="1.0" encoding="UTF-8"?>
-		<KVCache>
-			<Set Id="id">
-		    	<CacheEntry isReferenced="true/false" isValid="true/false">
-		      		<Key>key</Key>
-		      		<Value>value</Value>
-		    	</CacheEntry>
-		  	</Set>
-		</KVCache>
-    */
+	
 	public String toXML() {
 		try { 
-			DocumentBuilderFactory docFactory = DocumentBuailderFactory.newInstance();
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 			Document doc = docBuilder.newDocument();
 			Element rElem, sElem, pElem, kElem, vElem;
 			Node kValue, vValue;
 			rElem = doc.createElement("KVCache");
-			doc.appendChild(rootElement);
+			doc.appendChild(rElem);
 			for (HashMap set: sets) {
 				sElem = doc.createElement("Set");
 				sElem.setAttribute("Id", String.valueOf(this.getSetId(set))); //we need the String of key for set id
-				for (Sting key: set.keys()) {
+				for (String key: set.keys()) {
 					pElem = doc.createElement("KVPair");
 					//Key
-		            kValue = doc.createTextNode(key);
+		            kValue = (Node) doc.createTextNode(key);
 		            kElem = doc.createElement("Key");
 		            kElem.appendChild(kValue);
 		            pElem.appendChild(kElem);
