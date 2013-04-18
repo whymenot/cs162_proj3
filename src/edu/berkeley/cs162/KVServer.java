@@ -62,7 +62,7 @@ public class KVServer implements KeyValueInterface {
 		// Must be called before anything else
 		AutoGrader.agKVServerPutStarted(key, value);
 
-		Writelock writeLock = dataCache.getWriteLock(key);
+		WriteLock writeLock = dataCache.getWriteLock(key);
         writeLock.lock();
         dataStore.put(key, value);   -- // dataStore -> to be synchronized...
         dataCache.put(key, value);
