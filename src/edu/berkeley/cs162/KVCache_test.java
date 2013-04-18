@@ -24,6 +24,13 @@ public class KVCache_test {
 			System.out.println(num);
 		}
 		assertTrue(cache.get("k")==null);
+		try {
+			System.out.println("cache is: " +cache.toXML());
+		} catch (KVException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		for(int i = 0; i<strs.length; i++){
 			if(strs[i]!="k"){
 				assertTrue(cache.get(strs[i])==strs[i]);
@@ -34,8 +41,29 @@ public class KVCache_test {
 		for(int i = 0; i<strs.length; i++){
 			assertTrue(cache.get(strs[i])==null);
 		}
+		try {
+			System.out.println("cache is: " +cache.toXML());
+		} catch (KVException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		//Test for XML
+		KVCache cache2 = new KVCache(2,2);
+		cache2.put("k1", "v1");
+		cache2.put("k2", "v2");
+		String expectedXML = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><KVCache><Set Id=\"0\"><KVPair><Key>k1</Key><Value>v1</Value></KVPair></Set><Set Id=\"1\"><KVPair><Key>k2</Key><Value>v2</Value></KVPair></Set></KVCache>";
+		String realXML = "";
+		try {
+			realXML = cache2.toXML();
+		} catch (KVException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Part 1");
+		System.out.println("RealXML: " + realXML);
+		System.out.println("FakeXML: " + expectedXML);
+		assertTrue(expectedXML.compareTo(realXML)==0);
 
 	}
 
