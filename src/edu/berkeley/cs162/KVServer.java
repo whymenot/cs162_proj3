@@ -83,7 +83,7 @@ public class KVServer implements KeyValueInterface {
         if (temp == null)
         {
             writeLock.unlock();
-            throws new KVException("didn't store need new message");
+            throw new KVException("didn't store need new message");
         } else {
             dataCache.put(key, temp);
         }
