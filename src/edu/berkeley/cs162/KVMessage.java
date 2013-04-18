@@ -309,12 +309,15 @@ public class KVMessage {
 	public void sendMessage(Socket socket) throws KVException {
 		try {
 			String xml = this.toXML();
-			//System.out.println(socket.getPort());
-			//System.out.println(socket.getInetAddress());
+			
 			OutputStream os = socket.getOutputStream();
+			System.out.println(socket.getLocalPort());
+			
 			os.write(xml.getBytes(), 0, xml.length());
+			System.out.println("LAST LINE OF sendMessage()");
 		}
 		catch (IOException e) {
+			System.out.println("HERE EXCEPTION THROWN");
 			throw new KVException(new KVMessage("resp", "Network Error: Could not send data"));
 		}
 		catch (KVException e) {
