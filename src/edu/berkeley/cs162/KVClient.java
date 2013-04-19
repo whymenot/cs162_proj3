@@ -80,13 +80,6 @@ public class KVClient implements KeyValueInterface {
 		catch (Exception e) {
 			throw new KVException(new KVMessage("resp", "Network Error: Could not create socket"));
 		}
-		/*
-		try {
-			socket.connect(socket.getRemoteSocketAddress());
-		}
-		catch (Exception e) {
-			throw new KVException(new KVMessage("resp", "Network Error: Could not connect"));
-		}*/
 		return socket;
 	}
 	
@@ -124,10 +117,11 @@ public class KVClient implements KeyValueInterface {
 	    }
 	    
 	    response = new KVMessage(is);
-	    if (response.getMessage() == "Success") {
+	    
+	    if (response.getMessage().equals("Success")) {
             closeHost(socket);
         }
-	    throw new KVException(response);
+	    //throw new KVException(response);
 	}
 
 
@@ -184,12 +178,11 @@ public class KVClient implements KeyValueInterface {
 	    }
 		
 		response = new KVMessage(is);
-		if (response.getMessage() == "Success") {
+		if (response.getMessage().equals("Success")) {
             closeHost(socket);
 			return;
         }
 		throw new KVException(response);
-	    
 	}
 	/** Part II END */
 }

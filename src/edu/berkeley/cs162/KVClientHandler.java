@@ -67,15 +67,15 @@ public class KVClientHandler implements NetworkHandler {
                 KVMessage kvm = new KVMessage(client.getInputStream());
                 String type = kvm.getMsgType();
                 KVMessage resp = new KVMessage("resp", "Success");
-                if(type == "getreq")
+                if(type.equals("getreq"))
                 {
                     resp.setKey(kvm.getKey());
                     resp.setValue(kvServer.get(kvm.getKey()));
                     resp.setMessage(null);
                 }
-                else if(type == "putreq")
+                else if(type.equals("putreq"))
                     kvServer.put(kvm.getKey(), kvm.getValue());
-                else if(type == "delreq")
+                else if(type.equals("delreq"))
                     kvServer.del(kvm.getKey());
                 else
                     throw new KVException(new KVMessage("Unknown Error: invalid req type"));

@@ -90,7 +90,7 @@ public class KVMessage {
 
 	/** Part I */
 	private boolean validMsgType(String msgType) {
-		if (msgType=="getreq" || msgType=="putreq" || msgType=="delreq" || msgType=="resp")
+		if (msgType.equals("getreq") || msgType.equals("putreq") || msgType.equals("delreq") || msgType.equals("resp"))
 			return true;
 		else
 			return false;
@@ -112,7 +112,7 @@ public class KVMessage {
 	public KVMessage(String msgType, String message) throws KVException {
 		if (validMsgType(msgType) == false)
 			throw new KVException(new KVMessage("resp", "Message format incorrect"));
-		else if (message == "" || message == null)
+		else if (message == null || message.length()==0)
 			throw new KVException(new KVMessage("resp", "Message format incorrect"));
 		else {
 			this.msgType = msgType;
@@ -137,7 +137,7 @@ public class KVMessage {
 			Element root = doc.getDocumentElement();
 			root.normalize();
 			
-			if (root.getNodeName() != "KVMessage")
+			if (!root.getNodeName().equals("KVMessage"))
 				throw new KVException(new KVMessage("resp", "Message format incorrect"));
 
 			this.msgType = root.getAttribute("type");
@@ -153,7 +153,7 @@ public class KVMessage {
 					throw new KVException(new KVMessage("resp", "Message format incorrect"));
 				else {
 					String key = keyList.item(0).getTextContent();
-					if (key=="" || key==null)
+					if (key==null || key.length()==0)
 						throw new KVException(new KVMessage("resp", "Message format incorrect"));
 					this.key = key;
 				}
@@ -164,7 +164,7 @@ public class KVMessage {
 				else {
 					String key = keyList.item(0).getTextContent();
 					String value = valueList.item(0).getTextContent();
-					if (key=="" || key==null || value=="" || value==null)
+					if (key==null || key.length()==0 || value==null || value.length()==0)
 						throw new KVException(new KVMessage("resp", "Message format incorrect"));
 					this.key = key;
 					this.value = value;
@@ -175,7 +175,7 @@ public class KVMessage {
 					throw new KVException(new KVMessage("resp", "Message format incorrect"));
 				else {
 					String key = keyList.item(0).getTextContent();
-					if (key=="" || key==null)
+					if (key==null || key.length()==0)
 						throw new KVException(new KVMessage("resp", "Message format incorrect"));
 					this.key = key;
 				}
@@ -187,7 +187,7 @@ public class KVMessage {
 					else {
 						String key = keyList.item(0).getTextContent();
 						String value = valueList.item(0).getTextContent();
-						if (key=="" || key==null || value=="" || value==null)
+						if (key==null || key.length()==0 || value==null || value.length()==0)
 							throw new KVException(new KVMessage("resp", "Message format incorrect"));
 						this.key = key;
 						this.value = value;
@@ -195,7 +195,7 @@ public class KVMessage {
 				}
 				else {
 					String message = messageList.item(0).getTextContent();
-					if (message=="" || message==null)
+					if (message==null || message.length()==0)
 						throw new KVException(new KVMessage("resp", "Message format incorrect"));
 					this.message = message;
 				}
@@ -247,14 +247,14 @@ public class KVMessage {
 			
 			if (this.msgType.equals("getreq")) {
 				rootElem.setAttribute("type", "getreq");
-				if (this.key=="" || this.key==null)
+				if (this.key==null || this.key.length()==0)
 					throw new KVException(new KVMessage("resp", "Message format incorrect"));
 				rootElem.appendChild(keyElem);
 				keyElem.appendChild(keyText);
 			}
 			else if (this.msgType.equals("putreq")) {
 				rootElem.setAttribute("type", "putreq");
-				if (this.key=="" || this.key==null || this.value=="" || this.value==null)
+				if (this.key==null || this.key.length()==0 || this.value==null || this.value.length()==0)
 					throw new KVException(new KVMessage("resp", "Message format incorrect"));
 				rootElem.appendChild(keyElem);
 				rootElem.appendChild(valueElem);
@@ -263,15 +263,15 @@ public class KVMessage {
 			}
 			else if (this.msgType.equals("delreq")) {
 				rootElem.setAttribute("type", "delreq");
-				if (this.key=="" || this.key==null)
+				if (this.key==null || this.key.length()==0)
 					throw new KVException(new KVMessage("resp", "Message format incorrect"));
 				rootElem.appendChild(keyElem);
 				keyElem.appendChild(keyText);
 			}
 			else if (this.msgType.equals("resp")) {
 				rootElem.setAttribute("type", "resp");
-				if (this.message=="" || this.message==null) {
-					if (this.key=="" || this.key==null || this.value=="" || this.value==null)
+				if (this.message==null || this.message.length()==0) {
+					if (this.key==null || this.key.length()==0 || this.value==null || this.value.length()==0)
 						throw new KVException(new KVMessage("resp", "Message format incorrect"));
 					rootElem.appendChild(keyElem);
 					rootElem.appendChild(valueElem);
@@ -309,13 +309,8 @@ public class KVMessage {
 	public void sendMessage(Socket socket) throws KVException {
 		try {
 			String xml = this.toXML();
-			//System.out.println("sendMessage: I - localPort=" + socket.getLocalPort() + ", port=" + socket.getPort());
-			
 			OutputStream os = socket.getOutputStream();
-			//System.out.println("sendMessage: II - localPort=" + socket.getLocalPort() + ", port=" + socket.getPort());
-			
 			os.write(xml.getBytes(), 0, xml.length());
-			//System.out.println("sendMessage: III");
 		}
 		catch (IOException e) {
 			throw new KVException(new KVMessage("resp", "Network Error: Could not send data"));

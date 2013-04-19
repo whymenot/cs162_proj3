@@ -119,6 +119,21 @@ public class KVMessage_test {
 			KVMessage kv = e.getMsg();
 			assertTrue(false);
 		}
+		
+		//Test #6 for constructor1
+		try {
+			KVMessage kvm = new KVMessage("putreq");
+			kvm.setKey("3");
+			kvm.setValue("7");
+			String xml = kvm.toXML();
+			InputStream stream = new ByteArrayInputStream(xml.getBytes());
+			
+			KVMessage kvm2 = new KVMessage(stream);
+			System.out.println(kvm.toXML());
+		}
+		catch (KVException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Test
