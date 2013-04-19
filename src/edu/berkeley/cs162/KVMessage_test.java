@@ -209,6 +209,8 @@ public class KVMessage_test {
 					response = new KVMessage(is);
 					assertTrue(response.getMsgType().equals("resp")
 							&& response.getMessage().equals("Success"));
+					
+					socket.close();
 				}
 				catch (KVException e) {
 					System.out.println(e.getMsg().getMessage());
@@ -249,6 +251,9 @@ public class KVMessage_test {
 					
 					response = new KVMessage("resp","Success");
 					response.sendMessage(socket);
+					
+					socket.close();
+					serverSocket.close();
 				}
 				catch (KVException e) {
 					System.out.println(e.getMsg().getMessage());
