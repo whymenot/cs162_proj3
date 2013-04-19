@@ -189,15 +189,16 @@ public class KVMessage_test {
 					request.setKey("sampleKey");
 					request.setValue("sampleValue");
 					
-					System.out.println("BB");
+					System.out.println("Client: 1 - localPort=" + socket.getLocalPort() + ", port=" + socket.getPort());
 					request.sendMessage(socket);
-					//<--------------------------------------- OK
-					//this.sleep(10000);
+					
+					//this.sleep(5000);
 					
 					is = socket.getInputStream();
-					System.out.println("CC1");
+					System.out.println("Client: 2 - localPort=" + socket.getLocalPort() + ", port=" + socket.getPort());
+					
 					response = new KVMessage(is);
-					System.out.println("CC2");
+					System.out.println("Client: 3 - localPort=" + socket.getLocalPort() + ", port=" + socket.getPort());
 				}
 				catch (KVException e) {
 					System.out.println(e.getMsg().getMessage());
@@ -230,15 +231,15 @@ public class KVMessage_test {
 					KVMessage response = null;
 					InputStream is = null;
 								
-					System.out.println("AA");
+					System.out.println("Server: A - localPort=" + socket.getLocalPort() + ", port=" + socket.getPort());
 					is = socket.getInputStream();
 					request = new KVMessage(is);
 					
-					System.out.println("DD");
+					System.out.println("Server: B - localPort=" + socket.getLocalPort() + ", port=" + socket.getPort());
 					response = new KVMessage("resp","Success");
-					System.out.println("DD1");
+					System.out.println("Server: C - localPort=" + socket.getLocalPort() + ", port=" + socket.getPort());
 					response.sendMessage(socket);
-					System.out.println("DD2");
+					System.out.println("Server: D - localPort=" + socket.getLocalPort() + ", port=" + socket.getPort());
 				}
 				catch (KVException e) {
 					System.out.println(e.getMsg().getMessage());
