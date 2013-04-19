@@ -34,7 +34,7 @@ public class KVServer_test {
 			assertTrue(true);
 		}
 		try {
-			assertFalse(kvServer.put("here", "12"));
+			kvServer.put("here", "12");
 			assertEquals(kvServer.dataStore.get("here"), "12");
 			assertEquals(kvServer.dataCache.get("here"), "12");
 			kvServer.dataCache.del("here");

@@ -42,8 +42,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
  */
 public class KVServer implements KeyValueInterface {
 	//Fields
-	private KVStore dataStore = null;
-	private KVCache dataCache = null;
+	protected KVStore dataStore = null;
+	protected KVCache dataCache = null;
 	private static final int MAX_KEY_SIZE = 256;
 	private static final int MAX_VAL_SIZE = 256 * 1024;
 	
