@@ -33,12 +33,24 @@ public class KVServer_test {
 		} catch(Exception e) {
 			assertTrue(true);
 		}
+		try{
+			kvServer.del("telp");
+			assertTrue(false); //should throw exception
+		} catch(Exception e) {
+			assertTrue(true);
+		}
+		try{
+			kvServer.del(null);
+			assertTrue(false); //should throw exception
+		} catch(Exception e) {
+			assertTrue(true);
+		}
 		try {
 			kvServer.put("here", "12");
 			assertEquals(kvServer.dataStore.get("here"), "12");
 			assertEquals(kvServer.dataCache.get("here"), "12");
 			kvServer.dataCache.del("here");
-			assertEquals(kvServer.dataCache.get("here"), null);
+			assertNull(kvServer.dataCache.get("here"));
 			String result = kvServer.get("here");
 			assertEquals(kvServer.dataCache.get("here"), "12");
 			assertEquals(result, "12");
