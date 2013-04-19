@@ -10,15 +10,14 @@ public class KVCache_test {
 	public void KVCacheTest() {
 		KVCache cache = new KVCache(5,5);
 		cache.put("k1", "v1");
-		//assertTrue(cache.put("k1", "v2"));
-		assertTrue(cache.get("k1")=="v2");
+		assertTrue(cache.get("k1").equals("v1"));
 		String s = "k1";
 		String[] strs ={"a","k","a2","f","k2","f2","q","q2","e","m","h","i"};
 		
 		for(int i = 0; i<strs.length; i++){
 			int num = Math.abs(strs[i].hashCode()) % 5;
 			if(i==3){
-				assertTrue(cache.get("a")=="a");
+				assertTrue(cache.get("a").equals("a"));
 			}
 			cache.put(strs[i], strs[i]);
 			System.out.println(num);
@@ -41,12 +40,6 @@ public class KVCache_test {
 		for(int i = 0; i<strs.length; i++){
 			assertTrue(cache.get(strs[i])==null);
 		}
-		try {
-			System.out.println("cache is: " +cache.toXML());
-		} catch (KVException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		
 		//Test for XML
 		KVCache cache2 = new KVCache(2,2);
@@ -60,9 +53,6 @@ public class KVCache_test {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("Part 1");
-		System.out.println("RealXML: " + realXML);
-		System.out.println("FakeXML: " + expectedXML);
 		assertTrue(expectedXML.compareTo(realXML)==0);
 
 	}
