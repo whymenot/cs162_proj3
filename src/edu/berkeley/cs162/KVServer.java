@@ -31,6 +31,7 @@
 //package edu.berkeley.cs162;
 package edu.berkeley.cs162;
 
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 /**
  * This class defines the slave key value servers. Each individual KVServer 
  * would be a fully functioning Key-Value server. For Project 3, you would 
@@ -41,8 +42,8 @@ package edu.berkeley.cs162;
  */
 public class KVServer implements KeyValueInterface {
 	//Fields
-	private synchronized KVStore dataStore = null;
-	private synchronized KVCache dataCache = null;
+	private KVStore dataStore = null;
+	private KVCache dataCache = null;
 	private static final int MAX_KEY_SIZE = 256;
 	private static final int MAX_VAL_SIZE = 256 * 1024;
 	
@@ -64,7 +65,7 @@ public class KVServer implements KeyValueInterface {
 
 		WriteLock writeLock = dataCache.getWriteLock(key);
         writeLock.lock();
-        dataStore.put(key, value);   -- // dataStore -> to be synchronized...
+        dataStore.put(key, value);// dataStore -> to be synchronized...
         dataCache.put(key, value);
         writeLock.unlock();
 
@@ -75,27 +76,31 @@ public class KVServer implements KeyValueInterface {
 	
 	public String get (String key) throws KVException {
 		AutoGrader.agKVServerGetStarted(key); //Must be called before anything else
-        Writelock writeLock = dataCache.getWriteLock(key);
-        writeLock.lock();
-        temp = dataCache.get(key);
-        if (temp == null)
-            temp = dataStore.get(key);
-        if (temp == null)
-        {
-            writeLock.unlock();
-            throws new KVException("didn't store need new message");
-        } else {
-            dataCache.put(key, temp);
+
+        WriteLock writeLock = dataCache.getWriteLock(key);
+        String result = null;
+        try{
+        	writeLock.lock();
+        	result = dataCache.get(key);
+        	if (result == null){
+        		result = dataStore.get(key);
+        	}	
+        }catch(KVException e){
+        	writeLock.unlock();
+        	throw new KVException(e.getMsg());
         }
-        writeLock.unlock();
+        
+        if(result!=null){
+        	dataCache.put(key,result);
+        }
 		AutoGrader.agKVServerGetFinished(key); //Must be called before returning
-		return temp;
+		return result;
 	}
 	
 	public void del (String key) throws KVException {
 		// Must be called before anything else
 		AutoGrader.agKVServerDelStarted(key);
-        Writelock writeLock = dataCache.getWriteLock(key);
+        WriteLock writeLock = dataCache.getWriteLock(key);
         writeLock.lock();
         dataCache.del(key);
         dataStore.del(key);  //Think about exceptions here
