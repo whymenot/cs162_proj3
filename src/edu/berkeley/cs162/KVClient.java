@@ -80,12 +80,13 @@ public class KVClient implements KeyValueInterface {
 		catch (Exception e) {
 			throw new KVException(new KVMessage("resp", "Network Error: Could not create socket"));
 		}
+		/*
 		try {
 			socket.connect(socket.getRemoteSocketAddress());
 		}
 		catch (Exception e) {
 			throw new KVException(new KVMessage("resp", "Network Error: Could not connect"));
-		}
+		}*/
 		return socket;
 	}
 	
@@ -98,7 +99,7 @@ public class KVClient implements KeyValueInterface {
 	    }
 	}
 	
-	public boolean put(String key, String value) throws KVException {
+	public void put(String key, String value) throws KVException {
 	    if (key.length() > 256)
 	    	throw new KVException(new KVMessage("resp", "Oversized key"));
 	    if (value.length() > 256*1024)
@@ -125,7 +126,6 @@ public class KVClient implements KeyValueInterface {
 	    response = new KVMessage(is);
 	    if (response.getMessage() == "Success") {
             closeHost(socket);
-	    	return true;
         }
 	    throw new KVException(response);
 	}

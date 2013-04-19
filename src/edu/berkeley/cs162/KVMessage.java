@@ -132,7 +132,7 @@ public class KVMessage {
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(input);
+			Document doc = dBuilder.parse(new NoCloseInputStream(input));
 
 			Element root = doc.getDocumentElement();
 			root.normalize();
