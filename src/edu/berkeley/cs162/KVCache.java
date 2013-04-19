@@ -32,6 +32,7 @@
 package edu.berkeley.cs162;
 
 import java.io.StringWriter;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -57,6 +58,7 @@ public class KVCache implements KeyValueInterface {
 	private int numSets = 100;
 	private int maxElemsPerSet = 10;
 	private KVCacheSet[] sets;
+	private Lock lock;
 
 	/**
 	 * Creates a new LRU cache.
@@ -144,6 +146,7 @@ public class KVCache implements KeyValueInterface {
 	}
 	
 	public String toXML() throws KVException {
+		lock.lock();
 		try { 
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -172,7 +175,7 @@ public class KVCache implements KeyValueInterface {
 					sElem.appendChild(pElem);
 				}
 				//Append pair to root
-	            rElem.appendChild(sElem);	
+	            rElem.appendChild(sElem);
 			}
 			DOMSource domSource = new DOMSource(doc);
 	        StringWriter stringWriter = new StringWriter();
@@ -185,5 +188,8 @@ public class KVCache implements KeyValueInterface {
 	    catch (Exception e) {
 	    	throw new KVException(new KVMessage("resp", "Error during KVCache toXML"));
 	    }  
+		finally {
+			lock.unlock();
+		}
 	}
 }

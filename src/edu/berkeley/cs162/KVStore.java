@@ -209,7 +209,7 @@ public class KVStore implements KeyValueInterface {
 	        if (nodes.getLength() != 1) {
 	            throw new KVException(new KVMessage("resp", "Unknown Error: XML format incorrect"));
 	        }
-
+	        Hashtable<String, String> newstore = new Hashtable<String, String>();
 	        // Restore K-V pairs
 	        NodeList pairNodes = ((Element)nodes.item(0)).getElementsByTagName("KVPair");
 	        Element pElem, kElem, vElem;
@@ -217,8 +217,9 @@ public class KVStore implements KeyValueInterface {
 	        	pElem = (Element) pairNodes.item(i);
 	        	kElem = (Element) pElem.getElementsByTagName("Key").item(0);
 	        	vElem = (Element) pElem.getElementsByTagName("Value").item(0);
-	        	put (kElem.getFirstChild().getNodeValue(), vElem.getFirstChild().getNodeValue());
+	        	newstore.put (kElem.getFirstChild().getNodeValue(), vElem.getFirstChild().getNodeValue());
 	        }
+	        store = newstore;
         } catch (IOException ioe) {
             throw new KVException(new KVMessage("resp", "I/O Error during restoreFromFile"));
         } catch (SAXException se){
