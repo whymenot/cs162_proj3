@@ -192,11 +192,12 @@ public class KVMessage_test {
 					System.out.println("BB");
 					request.sendMessage(socket);
 					//<--------------------------------------- OK
+					//this.sleep(10000);
+					
 					is = socket.getInputStream();
 					System.out.println("CC1");
 					response = new KVMessage(is);
 					System.out.println("CC2");
-					System.out.println(response.toXML());
 				}
 				catch (KVException e) {
 					System.out.println(e.getMsg().getMessage());
@@ -235,7 +236,9 @@ public class KVMessage_test {
 					
 					System.out.println("DD");
 					response = new KVMessage("resp","Success");
+					System.out.println("DD1");
 					response.sendMessage(socket);
+					System.out.println("DD2");
 				}
 				catch (KVException e) {
 					System.out.println(e.getMsg().getMessage());

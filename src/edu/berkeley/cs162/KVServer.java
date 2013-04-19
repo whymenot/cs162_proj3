@@ -76,6 +76,7 @@ public class KVServer implements KeyValueInterface {
 	
 	public String get (String key) throws KVException {
 		AutoGrader.agKVServerGetStarted(key); //Must be called before anything else
+
         WriteLock writeLock = dataCache.getWriteLock(key);
         String result = null;
         try{

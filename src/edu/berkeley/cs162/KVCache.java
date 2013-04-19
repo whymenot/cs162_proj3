@@ -45,6 +45,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 
 /**
@@ -149,7 +150,8 @@ public class KVCache implements KeyValueInterface {
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 			Document doc = docBuilder.newDocument();
 			Element rElem, sElem, pElem, kElem, vElem;
-			Node kValue, vValue;
+			Text kValue;
+			Text vValue;
 			rElem = doc.createElement("KVCache");
 			doc.appendChild(rElem);
 			for (int i =0; i < sets.length; i++) {
@@ -159,12 +161,12 @@ public class KVCache implements KeyValueInterface {
 				for (String key: set.entries.keySet()) {
 					pElem = doc.createElement("KVPair");
 					//Key
-		            kValue = (Node) doc.createTextNode(key);
+		            kValue = doc.createTextNode(key);
 		            kElem = doc.createElement("Key");
 		            kElem.appendChild(kValue);
 		            pElem.appendChild(kElem);
 		            //Value
-		            vValue = (Node) doc.createTextNode(set.entries.get(key).getData());
+		            vValue = doc.createTextNode(set.entries.get(key).getData());
 		            vElem = doc.createElement("Value");
 		            vElem.appendChild(vValue);
 					pElem.appendChild(vElem);
