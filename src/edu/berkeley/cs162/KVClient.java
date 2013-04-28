@@ -121,7 +121,7 @@ public class KVClient implements KeyValueInterface {
 	    if (response.getMessage().equals("Success")) {
             closeHost(socket);
         }
-	    //throw new KVException(response);
+	    throw new KVException(response);
 	}
 
 
